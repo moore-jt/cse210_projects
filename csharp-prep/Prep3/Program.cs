@@ -9,27 +9,25 @@ class Program
         {
             // Generate random number and set magic number between 1 and 100
             Random randomGenerator = new Random();
-            int magicNumber = randomGenerator.Next(1, 100);
-            int guessCount = 0;
+            int magicNumber = randomGenerator.Next(1, 101);
+            int guessCount = 1;
 
             // Receive user input to guess the number
             Console.WriteLine("What is your guess?");
-            int guess;
-            int.TryParse(Console.ReadLine(), out guess);
+            int guess = 0;
 
             // Loop until user guesses the number
             while (guess != magicNumber)
             {
+                guess = int.Parse(Console.ReadLine());
                 if (guess < magicNumber)
                 {
                     Console.WriteLine("Higher");
-                    int.TryParse(Console.ReadLine(), out guess);
                     guessCount++;
                 }
                 else if (guess > magicNumber)
                 {
                     Console.WriteLine("Lower");
-                    int.TryParse(Console.ReadLine(), out guess);
                     guessCount++;
                 }
                 else
