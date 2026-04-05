@@ -2,21 +2,36 @@
 
 public class Expense : Transaction
 {
-    public string _merchant;
-    public bool _recurring;
+    private string _merchant;
 
-    public Expense(decimal amount) : base(amount)
+    public string Merchant 
+    { 
+        get { return _merchant; } 
+        set { _merchant = value; } 
+    }
+    public Expense(decimal amount, Category category, string merchant) : base(amount)
     {
-        
+        _merchant = merchant;
+        TransactionCategory = category;
     }
 
     public override void Process()
     {
+        Console.WriteLine($"[LOG] Processing {_amount:C} expense at {_merchant}...");
 
+        if (TransactionCategory != null)
+        {
+            bool isOver = TransactionCategory.CheckLimit(_amount);
+
+            if (isOver)
+            {
+                Console.WriteLine($"!!! WARNING !!! This expense puts you over your {TransactionCategory.Name} budget!");
+            }
+        }
     }
 
     public override string GetSummary()
     {
-        return string.Empty;
+        return $"{_date.ToShortDateString()} | [-] {_amount:C} | {_merchant} ({TransactionCategory.Name})";
     }
 }
