@@ -2,14 +2,20 @@
 
 public class Category
 {
-    public int CategoryId;
-    public string Name;
-    public bool IsIncomeCategory;
+    public string Name { get; set; }
+    private decimal _budgetLimit;
+    private decimal _currentSpending;
 
-    public string GetName()
+    public Category(string name, decimal limit)
     {
-        return string.Empty;
+        Name = name;
+        _budgetLimit = limit;
+        _currentSpending = 0;
     }
 
-    
+    public bool CheckLimit(decimal newExpenseAmount)
+    {
+        _currentSpending += newExpenseAmount;
+        return _currentSpending > _budgetLimit;
+    }
 }
