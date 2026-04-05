@@ -1,26 +1,72 @@
-
+using System.Text.Json.Serialization;
 
 public class Account
 {
-    private int _accountId;
+    [JsonInclude]
     private string _name;
+    [JsonInclude]
     private decimal _balance;
+    [JsonInclude]
     private List<Transaction> _transactions;
+
+    public string Name
+    {
+        get {return _name; } 
+        set {_name = value; }
+    }
+
+    public decimal Balance 
+    { 
+        get {return _balance;} 
+    }
+
+    public Account(string name)
+    {
+        _name = name;
+        _balance = 0;
+        _transactions = new List<Transaction>();
+    }
 
     public void AddTransaction(Transaction t)
     {
-        _transactions.Add(t);
-        t.Process();
+       _transactions.Add(t);
 
-        if (t is Income) _balance += t._amount;
-        else if (t is Expense) _balance -= t._amount;
+       t.Process();
 
-        Console.WriteLine($"New Balance: {_balance:C}");
+       if (t is Income)
+       {
+            _balance += t.Amount;
+       }
+       else if (t is Expense)
+       {
+            _balance -= t.Amount;
+       }
     }
 
-    public Transaction RemoveTransaction(Transaction t)
+    public bool RemoveTransaction(Transaction t)
     {
-        return null;
+        if (_transactions.Contains(t))
+        {
+            if (t is Income)
+            {
+                _balance -= t.Amount;
+
+            }
+            else if (t is Expense)
+            {
+                _balance += t.Amount;
+            }
+
+            _transactions.Remove(t);
+
+            Console.WriteLine($"[SYSTEM] Transaction removed. Adjusted balance: {_balance:C}");
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("[ERROR] Transaction not found in this account.");
+            return false;
+        }
     }
 
     public decimal GetBalance()
@@ -30,6 +76,6 @@ public class Account
 
     public List<Transaction> GetTransactions()
     {
-        return null;
+        return _transactions;
     }
 }
