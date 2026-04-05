@@ -1,20 +1,81 @@
+using System.Text.Json.Serialization;
 
-
-public class Budget
+public class Account
 {
-    public int _budgetId;
-    public Category _category;
-    public decimal _limit;
-    private DateTime _startDate;
-    private DateTime _endDate;
+    [JsonInclude]
+    private string _name;
+    [JsonInclude]
+    private decimal _balance;
+    [JsonInclude]
+    private List<Transaction> _transactions;
 
-    public decimal UpdateSpending()
+    public string Name
     {
-        return 0;
+        get {return _name; } 
+        set {_name = value; }
     }
 
-    public bool IsOverBudget()
+    public decimal Balance 
+    { 
+        get {return _balance;} 
+    }
+
+    public Account(string name)
     {
-        return false;
+        _name = name;
+        _balance = 0;
+        _transactions = new List<Transaction>();
+    }
+
+    public void AddTransaction(Transaction t)
+    {
+       _transactions.Add(t);
+
+       t.Process();
+
+       if (t is Income)
+       {
+            _balance += t.Amount;
+       }
+       else if (t is Expense)
+       {
+            _balance -= t.Amount;
+       }
+    }
+
+    public bool RemoveTransaction(Transaction t)
+    {
+        if (_transactions.Contains(t))
+        {
+            if (t is Income)
+            {
+                _balance -= t.Amount;
+
+            }
+            else if (t is Expense)
+            {
+                _balance += t.Amount;
+            }
+
+            _transactions.Remove(t);
+
+            Console.WriteLine($"[SYSTEM] Transaction removed. Adjusted balance: {_balance:C}");
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("[ERROR] Transaction not found in this account.");
+            return false;
+        }
+    }
+
+    public decimal GetBalance()
+    {
+        return _balance;
+    }
+
+    public List<Transaction> GetTransactions()
+    {
+        return _transactions;
     }
 }
