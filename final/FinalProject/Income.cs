@@ -2,18 +2,27 @@
 
 public class Income : Transaction
 {
-    public string _source;
+   private string _source;
 
-
-    public Income(decimal amount) : base(amount) {}
-    public override void Process()
+   public string Source
     {
-        
+        get {return _source;} 
+        set {_source = value;}
+    }
+
+    public Income(decimal amount, string source) : base(amount)
+    {
+        _source = source;
     }
 
     public override string GetSummary()
     {
-        return string.Empty;   
+        return $"{_date.ToShortDateString()} | [+] {_amount:C} | Source: {_source}";
+    }
+
+    public override void Process() 
+    { 
+        Console.WriteLine($"[LOG] Income of {_amount:C} from {_source} processed.");
     }
 
 
